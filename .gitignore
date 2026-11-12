@@ -1,0 +1,4 @@
+build/
+UsageClock.app/
+.DS_Store
+*.xcuserstate
