@@ -109,8 +109,8 @@ private func renderPreview() {
     model.theme.applyPreview(image: wallpaper, opacity: 0.82, glass: .frosted)
     model.pomodoro.applyPreview(
         phase: .focus,
-        state: .running,
-        remaining: 18 * 60 + 42,
+        state: .ready,
+        remaining: 25 * 60,
         todayFocusCount: 3,
         focusStreak: 2
     )
@@ -121,10 +121,18 @@ private func renderPreview() {
     let outputDirectory = ProcessInfo.processInfo.environment["USAGECLOCK_PREVIEW_DIR"] ?? "."
 
     let collapsed = PreviewStage(size: CGSize(width: 360, height: 90), bodyOffset: 0) {
-        NotchRimView(model: model, ui: NotchUIState(), geometry: geometry)
+        NotchRimView(model: model, pomodoro: model.pomodoro, ui: NotchUIState(), geometry: geometry)
             .frame(width: geometry.capWidth, height: geometry.capHeight)
     }
     render(collapsed, width: 360, height: 90, to: "\(outputDirectory)/preview-cap.png")
+
+    model.pomodoro.applyPreview(
+        phase: .focus,
+        state: .running,
+        remaining: 12 * 60 + 30,
+        todayFocusCount: 3,
+        focusStreak: 2
+    )
 
     let expandedHeight = 32 + geometry.bodyWindowHeight
     let expanded = PreviewStage(size: CGSize(width: 360, height: expandedHeight), bodyOffset: 32) {
@@ -138,7 +146,7 @@ private func renderPreview() {
             )
             .frame(width: geometry.bodyWindowWidth, height: geometry.bodyWindowHeight)
 
-            NotchRimView(model: model, ui: ui, geometry: geometry)
+            NotchRimView(model: model, pomodoro: model.pomodoro, ui: ui, geometry: geometry)
                 .frame(width: geometry.capWidth, height: geometry.capHeight)
                 .offset(y: -32)
         }
@@ -165,7 +173,7 @@ private func renderPreview() {
             )
             .frame(width: geometry.bodyWindowWidth, height: geometry.reminderWindowHeight)
 
-            NotchRimView(model: model, ui: ui, geometry: geometry)
+            NotchRimView(model: model, pomodoro: model.pomodoro, ui: ui, geometry: geometry)
                 .frame(width: geometry.capWidth, height: geometry.capHeight)
                 .offset(y: -32)
         }

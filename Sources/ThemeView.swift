@@ -63,26 +63,28 @@ struct ThemeCardBackground: View {
     }
 
     private var simulatedFrost: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.12, green: 0.20, blue: 0.34),
-                    Color(red: 0.24, green: 0.12, blue: 0.30),
-                    Color(red: 0.05, green: 0.09, blue: 0.16)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            Circle()
-                .fill(Color(red: 0.96, green: 0.54, blue: 0.38).opacity(0.55))
-                .frame(width: 190, height: 190)
-                .blur(radius: 60)
-                .offset(x: -100, y: 40)
-            Circle()
-                .fill(Color(red: 0.35, green: 0.72, blue: 0.95).opacity(0.50))
-                .frame(width: 170, height: 170)
-                .blur(radius: 55)
-                .offset(x: 105, y: -50)
+        LinearGradient(
+            colors: [
+                Color(red: 0.12, green: 0.20, blue: 0.34),
+                Color(red: 0.24, green: 0.12, blue: 0.30),
+                Color(red: 0.05, green: 0.09, blue: 0.16)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .overlay {
+            ZStack {
+                Circle()
+                    .fill(Color(red: 0.96, green: 0.54, blue: 0.38).opacity(0.55))
+                    .frame(width: 190, height: 190)
+                    .blur(radius: 60)
+                    .offset(x: -100, y: 40)
+                Circle()
+                    .fill(Color(red: 0.35, green: 0.72, blue: 0.95).opacity(0.50))
+                    .frame(width: 170, height: 170)
+                    .blur(radius: 55)
+                    .offset(x: 105, y: -50)
+            }
         }
     }
 }
@@ -138,26 +140,28 @@ struct ThemePreviewCard: View {
     }
 
     private var previewBackdrop: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.18, green: 0.24, blue: 0.40),
-                    Color(red: 0.42, green: 0.20, blue: 0.34),
-                    Color(red: 0.10, green: 0.16, blue: 0.24)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            Circle()
-                .fill(Color(red: 0.98, green: 0.48, blue: 0.32).opacity(0.60))
-                .frame(width: 150, height: 150)
-                .blur(radius: 50)
-                .offset(x: -120, y: 20)
-            Circle()
-                .fill(Color(red: 0.30, green: 0.62, blue: 1.0).opacity(0.55))
-                .frame(width: 170, height: 170)
-                .blur(radius: 55)
-                .offset(x: 130, y: -30)
+        LinearGradient(
+            colors: [
+                Color(red: 0.18, green: 0.24, blue: 0.40),
+                Color(red: 0.42, green: 0.20, blue: 0.34),
+                Color(red: 0.10, green: 0.16, blue: 0.24)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .overlay {
+            ZStack {
+                Circle()
+                    .fill(Color(red: 0.98, green: 0.48, blue: 0.32).opacity(0.60))
+                    .frame(width: 150, height: 150)
+                    .blur(radius: 50)
+                    .offset(x: -120, y: 20)
+                Circle()
+                    .fill(Color(red: 0.30, green: 0.62, blue: 1.0).opacity(0.55))
+                    .frame(width: 170, height: 170)
+                    .blur(radius: 55)
+                    .offset(x: 130, y: -30)
+            }
         }
         .allowsHitTesting(false)
     }

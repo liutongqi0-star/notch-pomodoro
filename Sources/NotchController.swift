@@ -78,7 +78,7 @@ final class NotchController: NSObject, NSMenuDelegate {
 
         let capSize = geometry.capFrame.size
         let capContainer = NSView(frame: NSRect(origin: .zero, size: capSize))
-        let capHost = NSHostingView(rootView: NotchRimView(model: model, ui: ui, geometry: geometry))
+        let capHost = NSHostingView(rootView: NotchRimView(model: model, pomodoro: model.pomodoro, ui: ui, geometry: geometry))
         capHost.frame = capContainer.bounds
         capHost.autoresizingMask = [.width, .height]
         capContainer.addSubview(capHost)

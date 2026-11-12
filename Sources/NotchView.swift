@@ -16,12 +16,16 @@ enum RainbowPalette {
         Color(red: 0.64, green: 0.33, blue: 1.00),
         Color(red: 1.00, green: 0.26, blue: 0.32)
     ]
+
+    /// 进度条模式去掉末尾重复的红色，让整条 U 从左到右呈现完整色谱。
+    static let progressColors = Array(colors.dropLast())
 }
 
 // MARK: - 环绕刘海的彩虹
 
 struct NotchRimView: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var pomodoro: PomodoroEngine
     @ObservedObject var ui: NotchUIState
     let geometry: NotchGeometry
 
@@ -52,6 +56,11 @@ struct NotchRimView: View {
         let pulse = ui.reminder
             ? 0.88 + 0.12 * CGFloat(sin(time * 4.2))
             : 1
+
+        if pomodoro.state != .ready {
+            drawProgress(context: &context, rim: rim, rect: rect, pulse: pulse)
+            return
+        }
 
         if !geometry.hasNotch {
             let silhouetteRect = CGRect(
@@ -145,6 +154,51 @@ struct NotchRimView: View {
                 style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round)
             )
         }
+    }
+
+    /// 倒计时期间，彩虹不再是流动的光环，而是沿 U 形路径从左到右填充的进度条。
+    /// 0% 完全不画彩虹，100% 画满整条 U。
+    private func drawProgress(
+        context: inout GraphicsContext,
+        rim: Path,
+        rect: CGRect,
+        pulse: CGFloat
+    ) {
+        let progress = min(max(pomodoro.liveProgress, 0), 1)
+        guard progress > 0.0005 else { return }
+
+        let filled = rim.trimmedPath(from: 0, to: progress)
+        let shading = GraphicsContext.Shading.linearGradient(
+            Gradient(colors: RainbowPalette.progressColors),
+            startPoint: CGPoint(x: rect.minX, y: rect.midY),
+            endPoint: CGPoint(x: rect.maxX, y: rect.midY)
+        )
+
+        // 填充部分的外发光
+        context.drawLayer { layer in
+            layer.addFilter(.blur(radius: ui.expanded ? 7.5 : 5.5))
+            layer.opacity = 0.9 * pulse
+            layer.stroke(
+                filled,
+                with: shading,
+                style: StrokeStyle(
+                    lineWidth: ui.expanded ? 8.5 : 7,
+                    lineCap: .round,
+                    lineJoin: .round
+                )
+            )
+        }
+
+        // 彩虹进度条本体
+        context.stroke(
+            filled,
+            with: shading,
+            style: StrokeStyle(
+                lineWidth: ui.expanded ? 3.2 : 2.8,
+                lineCap: .round,
+                lineJoin: .round
+            )
+        )
     }
 
     private static func openUPath(in rect: CGRect, radius: CGFloat) -> Path {

@@ -79,6 +79,7 @@ final class PomodoroEngine: ObservableObject {
 
     private let defaults = UserDefaults.standard
     private var endDate: Date?
+    private var debugPhaseDuration: TimeInterval?
     private var completionSound: NSSound?
     private var todayKey: String
     private var lastRoundedRemaining: Int = 25 * 60
@@ -107,6 +108,7 @@ final class PomodoroEngine: ObservableObject {
         // 仅用于本地截图和自动化验证：用一个很短的专注时间启动。
         if let raw = ProcessInfo.processInfo.environment["USAGECLOCK_TEST_POMODORO_SECONDS"],
            let seconds = Double(raw), seconds > 0 {
+            debugPhaseDuration = seconds
             remaining = seconds
             lastRoundedRemaining = Int(ceil(seconds))
             state = .running
@@ -117,13 +119,25 @@ final class PomodoroEngine: ObservableObject {
     // MARK: - 展示
 
     var phaseDuration: TimeInterval {
-        TimeInterval(minutes(for: phase) * 60)
+        if let debugPhaseDuration { return debugPhaseDuration }
+        return TimeInterval(minutes(for: phase) * 60)
     }
 
     var progress: Double {
         let total = phaseDuration
         guard total > 0 else { return 0 }
         if state == .completed { return 1 }
+        return min(1, max(0, 1 - remaining / total))
+    }
+
+    /// 刘海进度条使用：运行中根据结束时间实时计算，暂停时停在当前剩余时间。
+    var liveProgress: Double {
+        let total = phaseDuration
+        guard total > 0 else { return 0 }
+        if state == .completed { return 1 }
+        if state == .running, let endDate {
+            return min(1, max(0, 1 - endDate.timeIntervalSinceNow / total))
+        }
         return min(1, max(0, 1 - remaining / total))
     }
 
