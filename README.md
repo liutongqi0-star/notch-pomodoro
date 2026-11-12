@@ -2,6 +2,12 @@
 
 一个贴在 MacBook 刘海上的番茄钟 + 随手记小工具。
 
+> **只适用于带刘海的 MacBook。** 无刘海 Mac、外接显示器不是目标环境。
+
+![platform](https://img.shields.io/badge/platform-macOS%2014%2B-black)
+![macbook](https://img.shields.io/badge/MacBook-notch%20display-ff5a4d)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 平时，彩虹沿着刘海的左、下、右三条边环绕流动；鼠标移到刘海处，它会向下展开：上方是番茄钟，下方是一块随时可以写的想法备忘录。专注或休息结束时，只会弹出计时卡片提醒你，不会把备忘录一起带出来。
 
 ## 兼容性
@@ -116,14 +122,15 @@
 
 ## 下载
 
-在 GitHub **Releases** 页面下载最新的 `UsageClock.zip`，解压后把 `UsageClock.app` 拖进「应用程序」文件夹即可。首次打开如果提示无法验证开发者，右键点击应用 →「打开」。
+在 [GitHub Releases](https://github.com/liutongqi0-star/notch-pomodoro/releases/latest) 下载最新的 `UsageClock.zip`，解压后把 `UsageClock.app` 拖进「应用程序」文件夹即可。首次打开如果提示无法验证开发者，右键点击应用 →「打开」。
 
 也可以从源码构建，见下文。
 
 ## 安装
 
 ```bash
-cd UsageClock
+git clone https://github.com/liutongqi0-star/notch-pomodoro.git
+cd notch-pomodoro
 ./install.sh
 ```
 
@@ -155,6 +162,7 @@ rm -rf "$HOME/Library/Application Support/UsageClock"   # 可选：删除记录�
 要求：macOS 14 或更高版本、Xcode / Command Line Tools。
 
 ```bash
+cd notch-pomodoro
 ./build.sh
 ```
 
@@ -253,6 +261,8 @@ xattr -dr com.apple.quarantine ~/Applications/UsageClock.app
 ---
 
 当前版本：**3.0.0（build 10）**
+
+仓库：<https://github.com/liutongqi0-star/notch-pomodoro>
 
 ## License
 
