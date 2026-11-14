@@ -82,7 +82,7 @@ Ouvrez les réglages depuis l'icône **engrenage** de la carte du minuteur, ou *
 ![Réglages](docs/en/settings.png)
 
 - **Image personnalisée** : choisissez une image PNG / JPEG / HEIC. Elle est copiée dans le dossier de données de l'app et redimensionnée à 2400 px de côté maximum, le fichier d'origine n'est donc pas modifié
-- **Opacité** : 8 % – 100 %, contrôle la transparence de l'image ou du verre ; choisir une image pour la première fois fait passer l'opacité à 80 %
+- **Opacité** : de 8 % à 100 %, contrôle la transparence de l'image ou du verre ; choisir une image pour la première fois fait passer l'opacité à 80 %
 - **Dépoli** : une couche de verre doux intégrée ; les images personnalisées sont adoucies comme si on les regardait à travers un verre dépoli
 - **Transparent** : plus transparent, conserve des images nettes et laisse apparaître le bureau lorsqu'aucune image n'est définie
 - Les deux styles ajoutent une couche de protection sombre pour que le texte blanc reste lisible sur les fonds clairs
@@ -128,10 +128,10 @@ Choisissez **Système** pour suivre la langue de macOS, ou sélectionnez une lan
 ## Règles du minuteur et des rappels
 
 - Le Pomodoro utilise une heure de fin au lieu d'ajouter une seconde à la fois : il ne dérive donc pas de façon perceptible après un blocage ou une courte mise en veille
-- Terminer une concentration compte pour « aujourd'hui » et pour le cycle de pause longue ; terminer une pause courte n'ajoute pas de tour
+- Terminer une concentration compte dans les tours du jour et dans le cycle de pause longue ; terminer une pause courte n'ajoute pas de tour
 - Après une pause longue, le compteur de tours repart à 1
 - Passer une concentration n'ajoute pas de tour ; passer ou terminer une pause longue réinitialise le cycle
-- Les tours de concentration du jour changent à minuit heure locale
+- Les tours de concentration du jour sont remis à zéro à minuit, heure locale
 - Le décompte continue pendant le verrouillage de l'écran, la mise en veille et le changement d'app ; le rappel apparaît sur l'encoche à l'échéance
 - Le temps d'utilisation de l'ordinateur est toujours enregistré en arrière-plan (fonction d'origine). Il n'est plus affiché dans la carte supérieure ; voir « utilisation du jour / totale » dans la barre d'état ou le menu de la carte
 
