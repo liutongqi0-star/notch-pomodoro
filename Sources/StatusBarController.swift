@@ -15,12 +15,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         super.init()
 
         if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "timer", accessibilityDescription: "番茄钟")
-            button.image = image?.withSymbolConfiguration(.init(pointSize: 12, weight: .medium))
-            button.image?.isTemplate = true
             button.imagePosition = .imageLeading
             button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
-            button.toolTip = "番茄钟"
         }
 
         let menu = NSMenu()
@@ -34,15 +30,41 @@ final class StatusBarController: NSObject, NSMenuDelegate {
             }
             .store(in: &cancellables)
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageChanged),
+            name: L10n.languageDidChange,
+            object: nil
+        )
+
+        refreshLocalizedChrome()
+    }
+
+    @objc private func languageChanged() {
+        refreshLocalizedChrome()
+    }
+
+    private func refreshLocalizedChrome() {
+        if let button = statusItem.button {
+            let image = NSImage(
+                systemSymbolName: "timer",
+                accessibilityDescription: L10n.shared.t("menu.appName")
+            )
+            button.image = image?.withSymbolConfiguration(.init(pointSize: 12, weight: .medium))
+            button.image?.isTemplate = true
+            button.toolTip = L10n.shared.t("menu.appName")
+        }
         refreshTitle()
     }
 
     private func refreshTitle() {
         let pomodoro = model.pomodoro
         statusItem.button?.title = " " + TimeFormat.countdown(pomodoro.remaining)
-        statusItem.button?.toolTip =
-            "\(pomodoro.phase.title) \(TimeFormat.countdown(pomodoro.remaining))" +
-            " · 今日 \(pomodoro.todayFocusCount) 轮"
+        statusItem.button?.toolTip = L10n.shared.f(
+            "menu.status",
+            "\(pomodoro.phase.title) \(TimeFormat.countdown(pomodoro.remaining))",
+            pomodoro.todayFocusCount
+        )
     }
 
     // MARK: - 菜单
@@ -64,7 +86,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         menu.addItem(header)
 
         let status = NSMenuItem(
-            title: " \(pomodoro.stateTitle) · 今日 \(pomodoro.todayFocusCount) 轮",
+            title: L10n.shared.f("menu.status", pomodoro.stateTitle, pomodoro.todayFocusCount),
             action: nil,
             keyEquivalent: ""
         )
@@ -81,26 +103,26 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         toggle.target = self
         menu.addItem(toggle)
 
-        let reset = NSMenuItem(title: "重置本轮", action: #selector(resetPomodoro), keyEquivalent: "")
+        let reset = NSMenuItem(title: L10n.shared.t("menu.reset"), action: #selector(resetPomodoro), keyEquivalent: "")
         reset.target = self
         menu.addItem(reset)
 
-        let skip = NSMenuItem(title: "跳过本轮", action: #selector(skipPomodoro), keyEquivalent: "")
+        let skip = NSMenuItem(title: L10n.shared.t("menu.skip"), action: #selector(skipPomodoro), keyEquivalent: "")
         skip.target = self
         menu.addItem(skip)
 
         menu.addItem(.separator())
 
-        let settings = NSMenuItem(title: "外观与计时设置…", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: L10n.shared.t("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
 
-        let reveal = NSMenuItem(title: "展开刘海面板", action: #selector(revealPanel), keyEquivalent: "")
+        let reveal = NSMenuItem(title: L10n.shared.t("menu.reveal"), action: #selector(revealPanel), keyEquivalent: "")
         reveal.target = self
         menu.addItem(reveal)
 
         menu.addItem(toggleItem(
-            title: "登录时自动启动",
+            title: L10n.shared.t("menu.launchAtLogin"),
             isOn: model.launchAtLogin,
             action: #selector(toggleLaunchAtLogin)
         ))
@@ -108,28 +130,32 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         menu.addItem(.separator())
 
         let usage = NSMenuItem(
-            title: "电脑使用：今日 \(TimeFormat.human(model.todaySeconds)) · 累计 \(TimeFormat.human(model.totalSeconds))",
+            title: L10n.shared.f(
+                "menu.usage",
+                TimeFormat.human(model.todaySeconds),
+                TimeFormat.human(model.totalSeconds)
+            ),
             action: nil,
             keyEquivalent: ""
         )
         usage.isEnabled = false
         menu.addItem(usage)
 
-        let clearMemo = NSMenuItem(title: "清空备忘录…", action: #selector(clearMemoAction), keyEquivalent: "")
+        let clearMemo = NSMenuItem(title: L10n.shared.t("menu.clearMemo"), action: #selector(clearMemoAction), keyEquivalent: "")
         clearMemo.target = self
         menu.addItem(clearMemo)
 
-        let openData = NSMenuItem(title: "打开数据文件夹", action: #selector(openDataFolder), keyEquivalent: "")
+        let openData = NSMenuItem(title: L10n.shared.t("menu.openData"), action: #selector(openDataFolder), keyEquivalent: "")
         openData.target = self
         menu.addItem(openData)
 
-        let resetUsage = NSMenuItem(title: "重置使用统计…", action: #selector(resetStatistics), keyEquivalent: "")
+        let resetUsage = NSMenuItem(title: L10n.shared.t("menu.resetUsage"), action: #selector(resetStatistics), keyEquivalent: "")
         resetUsage.target = self
         menu.addItem(resetUsage)
 
         menu.addItem(.separator())
 
-        let quit = NSMenuItem(title: "退出", action: #selector(quit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: L10n.shared.t("menu.quit"), action: #selector(quit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
     }

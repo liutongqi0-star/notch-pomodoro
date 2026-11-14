@@ -123,6 +123,8 @@ struct ThemeCardBorder: View {
 struct ThemePreviewCard: View {
     @ObservedObject var theme: ThemeModel
 
+    @ObservedObject private var loc = L10n.shared
+
     var body: some View {
         Color.clear
             .frame(height: 108)
@@ -172,11 +174,11 @@ struct ThemePreviewCard: View {
                 Circle()
                     .fill(Color(red: 1.0, green: 0.42, blue: 0.38))
                     .frame(width: 5.5, height: 5.5)
-                Text("专注")
+                Text(loc.t("phase.focus"))
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color.white.opacity(0.72))
                 Spacer()
-                Text("第 1/4 轮")
+                Text(loc.f("cycle.roundOf", 1, 4))
                     .font(.system(size: 9.5, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.34))
             }
@@ -188,7 +190,7 @@ struct ThemePreviewCard: View {
                 .monospacedDigit()
                 .foregroundStyle(.white)
 
-            Text("保持专注 · 结束后提醒")
+            Text(loc.t("subtitle.focusRunning"))
                 .font(.system(size: 9.5))
                 .foregroundStyle(Color.white.opacity(0.46))
         }

@@ -40,6 +40,13 @@ echo "==> 写入 Info.plist"
 cp Info.plist "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
+echo "==> 写入本地化资源"
+for LANG in en zh-Hans zh-Hant ja ko es fr de; do
+    mkdir -p "$APP/Contents/Resources/${LANG}.lproj"
+    cp "Resources/${LANG}.lproj/InfoPlist.strings" \
+        "$APP/Contents/Resources/${LANG}.lproj/InfoPlist.strings"
+done
+
 echo "==> 生成 App 图标"
 xcrun swiftc \
     -O \

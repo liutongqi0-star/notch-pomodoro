@@ -10,15 +10,15 @@ enum GlassStyle: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .frosted: return "毛玻璃"
-        case .clear: return "透明玻璃"
+        case .frosted: return L10n.shared.t("glass.frosted")
+        case .clear: return L10n.shared.t("glass.clear")
         }
     }
 
     var detail: String {
         switch self {
-        case .frosted: return "柔化背景，像一层磨砂玻璃"
-        case .clear: return "保持清晰，能看见桌面与图片"
+        case .frosted: return L10n.shared.t("glass.frostedDetail")
+        case .clear: return L10n.shared.t("glass.clearDetail")
         }
     }
 
@@ -87,9 +87,9 @@ final class ThemeModel: ObservableObject {
 
     func chooseImage() {
         let panel = NSOpenPanel()
-        panel.title = "选择板块背景图片"
-        panel.message = "图片会复制到 UsageClock 的数据文件夹，不会修改原图。"
-        panel.prompt = "使用图片"
+        panel.title = L10n.shared.t("theme.pickerTitle")
+        panel.message = L10n.shared.t("theme.pickerMessage")
+        panel.prompt = L10n.shared.t("theme.pickerPrompt")
         panel.allowedContentTypes = [.image]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
@@ -99,7 +99,7 @@ final class ThemeModel: ObservableObject {
         do {
             try importImage(from: url)
         } catch {
-            presentError("无法使用这张图片", message: error.localizedDescription)
+            presentError(L10n.shared.t("theme.pickerErrorTitle"), message: error.localizedDescription)
         }
     }
 
@@ -204,7 +204,7 @@ final class ThemeModel: ObservableObject {
         alert.alertStyle = .warning
         alert.messageText = title
         alert.informativeText = message
-        alert.addButton(withTitle: "好")
+        alert.addButton(withTitle: L10n.shared.t("alert.ok"))
         alert.runModal()
     }
 }
@@ -216,9 +216,9 @@ private enum ThemeError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unreadable:
-            return "无法读取这张图片，请换一张 PNG、JPEG 或 HEIC 图片。"
+            return L10n.shared.t("alert.imageReadError")
         case .encodeFailed:
-            return "图片处理失败，请换一张图片再试。"
+            return L10n.shared.t("alert.imageEncodeError")
         }
     }
 }

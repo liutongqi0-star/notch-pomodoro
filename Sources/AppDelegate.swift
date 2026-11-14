@@ -36,6 +36,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSApplication.willTerminateNotification,
             object: nil
         )
+
+        // 截图自动化：启动后直接打开设置窗口。
+        if ProcessInfo.processInfo.environment["USAGECLOCK_OPEN_SETTINGS"] == "1" {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                self?.openSettings()
+            }
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

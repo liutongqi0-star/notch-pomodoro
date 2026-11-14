@@ -9,10 +9,10 @@ enum UsageState {
 
     var title: String {
         switch self {
-        case .active: return "使用中"
-        case .idle: return "空闲 · 已暂停"
-        case .locked: return "屏幕已锁定"
-        case .asleep: return "屏幕已休眠"
+        case .active: return L10n.shared.t("usage.active")
+        case .idle: return L10n.shared.t("usage.idle")
+        case .locked: return L10n.shared.t("usage.locked")
+        case .asleep: return L10n.shared.t("usage.asleep")
         }
     }
 }
@@ -37,8 +37,8 @@ final class AppModel: NSObject, ObservableObject {
             do {
                 try LoginItem.setEnabled(launchAtLogin)
             } catch {
-                NSLog("UsageClock: 更新登录项失败：\(error.localizedDescription)")
-                presentError("无法更新「登录时自动启动」", message: error.localizedDescription)
+                NSLog("UsageClock: failed to update login item: \(error.localizedDescription)")
+                presentError(L10n.shared.t("alert.launchAtLoginTitle"), message: error.localizedDescription)
             }
         }
     }
@@ -111,7 +111,7 @@ final class AppModel: NSObject, ObservableObject {
         // 避免 App Nap 让秒表停摆；允许系统正常休眠。
         activityToken = ProcessInfo.processInfo.beginActivity(
             options: [.userInitiatedAllowingIdleSystemSleep, .suddenTerminationDisabled],
-            reason: "UsageClock 需要持续记录使用时长"
+            reason: "UsageClock keeps usage time recording"
         )
 
         let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
@@ -223,7 +223,7 @@ final class AppModel: NSObject, ObservableObject {
             dirty = false
             lastSave = ProcessInfo.processInfo.systemUptime
         } catch {
-            NSLog("UsageClock: 保存记录失败：\(error.localizedDescription)")
+            NSLog("UsageClock: failed to save usage: \(error.localizedDescription)")
         }
     }
 
@@ -243,7 +243,7 @@ final class AppModel: NSObject, ObservableObject {
         do {
             try memoStore.save(memoText)
         } catch {
-            NSLog("UsageClock: 保存备忘录失败：\(error.localizedDescription)")
+            NSLog("UsageClock: failed to save memo: \(error.localizedDescription)")
         }
     }
 
@@ -257,10 +257,10 @@ final class AppModel: NSObject, ObservableObject {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "清空备忘录？"
-        alert.informativeText = "会删除备忘录里的全部文字，此操作无法撤销。"
-        alert.addButton(withTitle: "取消")
-        alert.addButton(withTitle: "清空")
+        alert.messageText = L10n.shared.t("alert.clearMemoTitle")
+        alert.informativeText = L10n.shared.t("alert.clearMemoMessage")
+        alert.addButton(withTitle: L10n.shared.t("alert.cancel"))
+        alert.addButton(withTitle: L10n.shared.t("alert.clear"))
         if alert.runModal() == .alertSecondButtonReturn {
             clearMemo()
         }
@@ -280,10 +280,10 @@ final class AppModel: NSObject, ObservableObject {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "重置累计使用时长？"
-        alert.informativeText = "会清空所有已记录的时长（包括今日与本次会话），此操作无法撤销。"
-        alert.addButton(withTitle: "取消")
-        alert.addButton(withTitle: "重置")
+        alert.messageText = L10n.shared.t("alert.resetUsageTitle")
+        alert.informativeText = L10n.shared.t("alert.resetUsageMessage")
+        alert.addButton(withTitle: L10n.shared.t("alert.cancel"))
+        alert.addButton(withTitle: L10n.shared.t("alert.reset"))
         if alert.runModal() == .alertSecondButtonReturn {
             resetStatistics()
         }
@@ -309,7 +309,7 @@ final class AppModel: NSObject, ObservableObject {
             alert.alertStyle = .warning
             alert.messageText = title
             alert.informativeText = message
-            alert.addButton(withTitle: "好")
+            alert.addButton(withTitle: L10n.shared.t("alert.ok"))
             alert.runModal()
         }
     }

@@ -45,12 +45,12 @@ enum TimeFormat {
     /// 自然语言格式，例如「3 小时 7 分」
     static func human(_ seconds: Double) -> String {
         let total = max(0, Int(seconds))
-        if total < 60 { return "\(total) 秒" }
+        if total < 60 { return L10n.shared.f("time.seconds", total) }
         let h = total / 3600
         let m = (total % 3600) / 60
-        if h == 0 { return "\(m) 分钟" }
-        if m == 0 { return "\(h) 小时" }
-        return "\(h) 小时 \(m) 分"
+        if h == 0 { return L10n.shared.f("time.minutes", m) }
+        if m == 0 { return L10n.shared.f("time.hours", h) }
+        return L10n.shared.f("time.hoursMinutes", h, m)
     }
 
     /// 本地时区下的日期键，例如 2026-10-19

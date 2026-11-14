@@ -7,6 +7,8 @@ struct SettingsView: View {
     @ObservedObject var theme: ThemeModel
     var onClose: () -> Void
 
+    @ObservedObject private var loc = L10n.shared
+
     private let accent = Color(red: 1.00, green: 0.42, blue: 0.38)
 
     var body: some View {
@@ -29,18 +31,35 @@ struct SettingsView: View {
                 .fill(Color.primary.opacity(0.08))
                 .frame(height: 1)
 
-            HStack {
-                Text("所有设置都会自动保存")
-                    .font(.system(size: 10))
-                    .foregroundStyle(.tertiary)
-                Spacer()
-                Button("完成") {
+            HStack(spacing: 7) {
+                Image(systemName: "globe")
+                    .font(.system(size: 10.5, weight: .medium))
+                    .foregroundStyle(.secondary)
+
+                Text(loc.t("settings.languageSection"))
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(.secondary)
+
+                Picker("", selection: languageBinding) {
+                    ForEach(AppLanguage.allCases) { language in
+                        Text(loc.label(for: language)).tag(language)
+                    }
+                }
+                .labelsHidden()
+                .pickerStyle(.menu)
+                .controlSize(.small)
+                .accessibilityLabel(loc.t("settings.languageSection"))
+                .help(loc.t("settings.languageHint"))
+
+                Spacer(minLength: 8)
+
+                Button(loc.t("settings.done")) {
                     onClose()
                 }
                 .keyboardShortcut(.defaultAction)
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
             .background(Color(nsColor: .windowBackgroundColor))
         }
         .frame(width: 470, height: 720)
@@ -71,9 +90,9 @@ struct SettingsView: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("番茄钟设置")
+                Text(loc.t("settings.title"))
                     .font(.system(size: 19, weight: .semibold))
-                Text("调整专注节奏，以及刘海面板的背景质感。")
+                Text(loc.t("settings.subtitle"))
                     .font(.system(size: 11.5))
                     .foregroundStyle(.secondary)
             }
@@ -84,7 +103,7 @@ struct SettingsView: View {
 
     private var timerSection: some View {
         VStack(alignment: .leading, spacing: 11) {
-            sectionTitle("番茄节奏")
+            sectionTitle(loc.t("settings.timerSection"))
 
             LazyVGrid(
                 columns: [
@@ -94,28 +113,28 @@ struct SettingsView: View {
                 spacing: 10
             ) {
                 durationField(
-                    "专注",
+                    loc.t("settings.focus"),
                     value: $pomodoro.focusMinutes,
                     range: 1...180,
-                    suffix: "分钟"
+                    suffix: loc.t("settings.minutesUnit")
                 )
                 durationField(
-                    "短休息",
+                    loc.t("settings.shortBreak"),
                     value: $pomodoro.shortBreakMinutes,
                     range: 1...60,
-                    suffix: "分钟"
+                    suffix: loc.t("settings.minutesUnit")
                 )
                 durationField(
-                    "长休息",
+                    loc.t("settings.longBreak"),
                     value: $pomodoro.longBreakMinutes,
                     range: 1...120,
-                    suffix: "分钟"
+                    suffix: loc.t("settings.minutesUnit")
                 )
                 durationField(
-                    "长休息间隔",
+                    loc.t("settings.longBreakInterval"),
                     value: $pomodoro.roundsBeforeLongBreak,
                     range: 2...8,
-                    suffix: "轮"
+                    suffix: loc.t("settings.roundsUnit")
                 )
             }
 
@@ -124,7 +143,7 @@ struct SettingsView: View {
                     Image(systemName: "speaker.wave.2.fill")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(.secondary)
-                    Text("专注或休息结束时播放提示音")
+                    Text(loc.t("settings.sound"))
                         .font(.system(size: 12))
                 }
             }
@@ -179,7 +198,7 @@ struct SettingsView: View {
 
     private var themeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle("板块主题")
+            sectionTitle(loc.t("settings.themeSection"))
 
             ThemePreviewCard(theme: theme)
 
@@ -187,24 +206,37 @@ struct SettingsView: View {
                 thumbnail
 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(theme.image == nil ? "默认深色渐变" : "自定义图片")
-                        .font(.system(size: 12, weight: .medium))
-                        .lineLimit(1)
-                    Text(theme.image == nil ? "选择一张图片作为面板背景" : "图片已复制到应用数据文件夹")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                    Text(
+                        theme.image == nil
+                            ? loc.t("settings.defaultGradient")
+                            : loc.t("settings.customImage")
+                    )
+                    .font(.system(size: 12, weight: .medium))
+                    .lineLimit(1)
+
+                    Text(
+                        theme.image == nil
+                            ? loc.t("settings.chooseImageHint")
+                            : loc.t("settings.imageCopiedHint")
+                    )
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
                 }
 
                 Spacer(minLength: 4)
 
-                Button(theme.image == nil ? "选择图片…" : "更换…") {
+                Button(
+                    theme.image == nil
+                        ? loc.t("settings.chooseImage")
+                        : loc.t("settings.changeImage")
+                ) {
                     theme.chooseImage()
                 }
                 .controlSize(.small)
 
                 if theme.image != nil {
-                    Button("移除") {
+                    Button(loc.t("settings.remove")) {
                         theme.removeImage()
                     }
                     .controlSize(.small)
@@ -213,7 +245,7 @@ struct SettingsView: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
-                    Text("不透明度")
+                    Text(loc.t("settings.opacity"))
                         .font(.system(size: 11, weight: .medium))
                     Spacer()
                     Text("\(Int((theme.opacity * 100).rounded()))%")
@@ -232,11 +264,11 @@ struct SettingsView: View {
             }
 
             HStack {
-                Text("图片只保存在本机，不会上传。")
+                Text(loc.t("settings.imagePrivacy"))
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
                 Spacer()
-                Button("恢复默认外观") {
+                Button(loc.t("settings.resetAppearance")) {
                     theme.resetAppearance()
                 }
                 .controlSize(.small)
@@ -314,14 +346,14 @@ struct SettingsView: View {
 
     private var generalSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("通用")
+            sectionTitle(loc.t("settings.general"))
 
             Toggle(isOn: $model.launchAtLogin) {
                 HStack(spacing: 8) {
                     Image(systemName: "power")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(.secondary)
-                    Text("登录时自动启动")
+                    Text(loc.t("settings.launchAtLogin"))
                         .font(.system(size: 12))
                 }
             }
@@ -332,7 +364,7 @@ struct SettingsView: View {
                 Image(systemName: "folder")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.secondary)
-                Button("打开数据文件夹") {
+                Button(loc.t("settings.openDataFolder")) {
                     model.openDataFolder()
                 }
                 .buttonStyle(.link)
@@ -340,6 +372,14 @@ struct SettingsView: View {
             }
             .font(.system(size: 12))
         }
+    }
+
+
+    private var languageBinding: Binding<AppLanguage> {
+        Binding(
+            get: { loc.selection },
+            set: { loc.set($0) }
+        )
     }
 
 

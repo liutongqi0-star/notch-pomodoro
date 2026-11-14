@@ -410,22 +410,22 @@ final class NotchController: NSObject, NSMenuDelegate {
         toggle.target = self
         menu.addItem(toggle)
 
-        let reset = NSMenuItem(title: "重置本轮", action: #selector(resetPomodoro), keyEquivalent: "")
+        let reset = NSMenuItem(title: L10n.shared.t("menu.reset"), action: #selector(resetPomodoro), keyEquivalent: "")
         reset.target = self
         menu.addItem(reset)
 
-        let skip = NSMenuItem(title: "跳过本轮", action: #selector(skipPomodoro), keyEquivalent: "")
+        let skip = NSMenuItem(title: L10n.shared.t("menu.skip"), action: #selector(skipPomodoro), keyEquivalent: "")
         skip.target = self
         menu.addItem(skip)
 
         menu.addItem(.separator())
 
-        let settings = NSMenuItem(title: "外观与计时设置…", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: L10n.shared.t("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
 
         let login = NSMenuItem(
-            title: "登录时自动启动",
+            title: L10n.shared.t("menu.launchAtLogin"),
             action: #selector(toggleLaunchAtLogin),
             keyEquivalent: ""
         )
@@ -436,28 +436,32 @@ final class NotchController: NSObject, NSMenuDelegate {
         menu.addItem(.separator())
 
         let today = NSMenuItem(
-            title: "今日专注 \(model.pomodoro.todayFocusCount) 轮 · 使用 \(TimeFormat.human(model.todaySeconds))",
+            title: L10n.shared.f(
+                "menu.todayFocus",
+                model.pomodoro.todayFocusCount,
+                TimeFormat.human(model.todaySeconds)
+            ),
             action: nil,
             keyEquivalent: ""
         )
         today.isEnabled = false
         menu.addItem(today)
 
-        let clearMemo = NSMenuItem(title: "清空备忘录…", action: #selector(clearMemoAction), keyEquivalent: "")
+        let clearMemo = NSMenuItem(title: L10n.shared.t("menu.clearMemo"), action: #selector(clearMemoAction), keyEquivalent: "")
         clearMemo.target = self
         menu.addItem(clearMemo)
 
-        let data = NSMenuItem(title: "打开数据文件夹", action: #selector(openDataFolder), keyEquivalent: "")
+        let data = NSMenuItem(title: L10n.shared.t("menu.openData"), action: #selector(openDataFolder), keyEquivalent: "")
         data.target = self
         menu.addItem(data)
 
-        let resetUsage = NSMenuItem(title: "重置使用统计…", action: #selector(resetStatistics), keyEquivalent: "")
+        let resetUsage = NSMenuItem(title: L10n.shared.t("menu.resetUsage"), action: #selector(resetStatistics), keyEquivalent: "")
         resetUsage.target = self
         menu.addItem(resetUsage)
 
         menu.addItem(.separator())
 
-        let quit = NSMenuItem(title: "退出", action: #selector(quit), keyEquivalent: "")
+        let quit = NSMenuItem(title: L10n.shared.t("menu.quit"), action: #selector(quit), keyEquivalent: "")
         quit.target = self
         menu.addItem(quit)
 

@@ -8,9 +8,9 @@ enum PomodoroPhase: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .focus: return "专注"
-        case .shortBreak: return "短休息"
-        case .longBreak: return "长休息"
+        case .focus: return L10n.shared.t("phase.focus")
+        case .shortBreak: return L10n.shared.t("phase.shortBreak")
+        case .longBreak: return L10n.shared.t("phase.longBreak")
         }
     }
 
@@ -159,64 +159,66 @@ final class PomodoroEngine: ObservableObject {
 
     var primaryActionTitle: String {
         switch state {
-        case .running: return "暂停"
-        case .paused: return "继续"
-        case .ready: return phase == .focus ? "开始专注" : "开始休息"
-        case .completed: return phase == .focus ? "开始休息" : "开始专注"
+        case .running: return L10n.shared.t("action.pause")
+        case .paused: return L10n.shared.t("action.resume")
+        case .ready:
+            return L10n.shared.t(phase == .focus ? "action.startFocus" : "action.startBreak")
+        case .completed:
+            return L10n.shared.t(phase == .focus ? "action.startBreak" : "action.startFocus")
         }
     }
 
     var stateTitle: String {
         switch state {
-        case .ready: return "准备开始"
-        case .running: return "进行中"
-        case .paused: return "已暂停"
-        case .completed: return "时间到"
+        case .ready: return L10n.shared.t("state.ready")
+        case .running: return L10n.shared.t("state.running")
+        case .paused: return L10n.shared.t("state.paused")
+        case .completed: return L10n.shared.t("state.completed")
         }
     }
 
     var cycleTitle: String {
-        if phase == .longBreak { return "长休息" }
+        if phase == .longBreak { return L10n.shared.t("phase.longBreak") }
         if phase == .focus {
             if focusStreak > 0, focusStreak % roundsBeforeLongBreak == 0 {
-                return "第 \(roundsBeforeLongBreak)/\(roundsBeforeLongBreak) 轮"
+                return L10n.shared.f("cycle.roundOf", roundsBeforeLongBreak, roundsBeforeLongBreak)
             }
             let current = focusStreak % roundsBeforeLongBreak + 1
-            return "第 \(current)/\(roundsBeforeLongBreak) 轮"
+            return L10n.shared.f("cycle.roundOf", current, roundsBeforeLongBreak)
         }
-        return "短暂放松"
+        return L10n.shared.t("cycle.breather")
     }
 
     var subtitle: String {
         switch (phase, state) {
         case (.focus, .completed):
-            return "休息 \(nextPhaseMinutes) 分钟，或稍后继续"
+            return L10n.shared.f("subtitle.focusCompleted", nextPhaseMinutes)
         case (.focus, .running):
-            return "保持专注 · 结束后提醒"
+            return L10n.shared.t("subtitle.focusRunning")
         case (.focus, .paused):
-            return "已暂停 · 点继续回到专注"
+            return L10n.shared.t("subtitle.focusPaused")
         case (.focus, .ready):
-            return "每 \(roundsBeforeLongBreak) 轮专注后长休息"
+            return L10n.shared.f("subtitle.focusReady", roundsBeforeLongBreak)
         case (.shortBreak, .completed), (.longBreak, .completed):
-            return "开始下一轮 \(focusMinutes) 分钟专注"
+            return L10n.shared.f("subtitle.breakCompleted", focusMinutes)
         case (.shortBreak, .running):
-            return "放松一下 · 结束后提醒"
+            return L10n.shared.t("subtitle.shortBreakRunning")
         case (.longBreak, .running):
-            return "好好休息 · 结束后提醒"
+            return L10n.shared.t("subtitle.longBreakRunning")
         case (.shortBreak, .paused), (.longBreak, .paused):
-            return "休息已暂停"
+            return L10n.shared.t("subtitle.breakPaused")
         case (.shortBreak, .ready):
-            return "休息 \(shortBreakMinutes) 分钟"
+            return L10n.shared.f("subtitle.shortBreakReady", shortBreakMinutes)
         case (.longBreak, .ready):
-            return "长休息 \(longBreakMinutes) 分钟"
+            return L10n.shared.f("subtitle.longBreakReady", longBreakMinutes)
         }
     }
 
     var bottomHint: String {
         switch phase {
-        case .focus: return "专注 \(focusMinutes)m"
-        case .shortBreak: return "休息 \(shortBreakMinutes)m"
-        case .longBreak: return "长休息 \(longBreakMinutes)m"
+        case .focus: return L10n.shared.f("hint.focus", focusMinutes)
+        case .shortBreak: return L10n.shared.f("hint.shortBreak", shortBreakMinutes)
+        case .longBreak: return L10n.shared.f("hint.longBreak", longBreakMinutes)
         }
     }
 

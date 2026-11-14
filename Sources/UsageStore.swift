@@ -33,7 +33,7 @@ struct UsageStore {
             decoder.dateDecodingStrategy = .iso8601
             return try decoder.decode(UsageData.self, from: raw)
         } catch {
-            NSLog("UsageClock: 读取记录失败：\(error.localizedDescription)")
+            NSLog("UsageClock: failed to read usage: \(error.localizedDescription)")
             // 数据损坏时保留现场，避免直接覆盖用户数据
             let stamp = Int(Date().timeIntervalSince1970)
             let backup = directory.appendingPathComponent("usage.corrupt-\(stamp).json")

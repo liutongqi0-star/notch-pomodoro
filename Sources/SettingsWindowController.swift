@@ -11,12 +11,15 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "番茄钟设置"
+        window.title = L10n.shared.t("settings.title")
         window.isReleasedWhenClosed = false
         window.hidesOnDeactivate = false
         window.collectionBehavior = [.moveToActiveSpace]
         window.backgroundColor = .windowBackgroundColor
         window.isOpaque = true
+        if ProcessInfo.processInfo.environment["USAGECLOCK_DARK"] == "1" {
+            window.appearance = NSAppearance(named: .darkAqua)
+        }
 
         let root = SettingsView(
             model: model,
@@ -31,11 +34,26 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         super.init(window: window)
         shouldCascadeWindows = false
         window.delegate = self
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageChanged),
+            name: L10n.languageDidChange,
+            object: nil
+        )
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func languageChanged() {
+        window?.title = L10n.shared.t("settings.title")
     }
 
     func windowWillClose(_ notification: Notification) {

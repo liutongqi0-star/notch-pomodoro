@@ -263,6 +263,8 @@ struct NotchBodyView: View {
     var onOpenSettings: () -> Void = {}
     var onDismissReminder: () -> Void = {}
 
+    @ObservedObject private var loc = L10n.shared
+
     var body: some View {
         ZStack(alignment: .top) {
             neck
@@ -318,13 +320,13 @@ struct NotchBodyView: View {
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.56))
 
-                Text("想法备忘录")
+                Text(loc.t("memo.title"))
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color.white.opacity(0.56))
 
                 Spacer(minLength: 8)
 
-                Text("自动保存")
+                Text(loc.t("memo.autosave"))
                     .font(.system(size: 9, weight: .medium))
                     .foregroundStyle(Color.white.opacity(0.32))
             }
@@ -349,7 +351,7 @@ struct NotchBodyView: View {
     private var memoBody: some View {
         ZStack(alignment: .topLeading) {
             if isPreview {
-                Text("灵感随手记下来，\n回头再整理成清单。")
+                Text(loc.t("memo.preview"))
                     .font(.system(size: 13.5))
                     .lineSpacing(5)
                     .foregroundStyle(Color.white.opacity(0.72))
@@ -358,7 +360,7 @@ struct NotchBodyView: View {
                 MemoEditor(text: $model.memoText)
 
                 if model.memoText.isEmpty {
-                    Text("随手记下想法…")
+                    Text(loc.t("memo.placeholder"))
                         .font(.system(size: 13.5))
                         .foregroundStyle(Color.white.opacity(0.36))
                         .padding(.top, 3)

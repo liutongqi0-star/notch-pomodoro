@@ -25,7 +25,7 @@ enum LoginItem {
         if enabled {
             guard let executable = Bundle.main.executableURL else {
                 throw NSError(domain: "UsageClock", code: 1, userInfo: [
-                    NSLocalizedDescriptionKey: "找不到应用可执行文件。"
+                    NSLocalizedDescriptionKey: L10n.shared.t("alert.loginItemMissing")
                 ])
             }
             try FileManager.default.createDirectory(at: launchAgentsDirectory, withIntermediateDirectories: true)
@@ -50,7 +50,7 @@ enum LoginItem {
         do {
             try setEnabled(true)
         } catch {
-            NSLog("UsageClock: 刷新登录项失败：\(error.localizedDescription)")
+            NSLog("UsageClock: failed to refresh login item: \(error.localizedDescription)")
         }
     }
 }

@@ -9,6 +9,8 @@ struct PomodoroCard: View {
     var onOpenSettings: () -> Void = {}
     var onDismissReminder: () -> Void = {}
 
+    @ObservedObject private var loc = L10n.shared
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
@@ -81,14 +83,14 @@ struct PomodoroCard: View {
                     .contentShape(Circle())
             }
             .buttonStyle(PressableButtonStyle())
-            .help("外观与计时设置")
+            .help(loc.t("help.settings"))
 
             Image(systemName: "ellipsis")
                 .font(.system(size: 10, weight: .bold))
                 .foregroundStyle(Color.white.opacity(0.52))
                 .frame(width: 18, height: 18)
                 .background(Circle().fill(Color.white.opacity(0.065)))
-                .accessibilityLabel("更多操作")
+                .accessibilityLabel(loc.t("a11y.more"))
         }
         .frame(height: 18)
     }
@@ -164,7 +166,8 @@ struct PomodoroCard: View {
                     .font(.system(size: 11.5, weight: .semibold))
                     .foregroundStyle(Color(red: 0.08, green: 0.07, blue: 0.08))
                     .lineLimit(1)
-                    .frame(width: 86, height: 26)
+                    .minimumScaleFactor(0.75)
+                    .frame(width: 96, height: 26)
                     .background(
                         Capsule()
                             .fill(accent)
@@ -186,13 +189,13 @@ struct PomodoroCard: View {
                     .contentShape(Circle())
             }
             .buttonStyle(PressableButtonStyle())
-            .help("重置本轮")
+            .help(loc.t("help.reset"))
 
             if pomodoro.state == .completed, isReminder {
                 Button {
                     onDismissReminder()
                 } label: {
-                    Text("稍后")
+                    Text(loc.t("action.later"))
                         .font(.system(size: 10.5, weight: .medium))
                         .foregroundStyle(Color.white.opacity(0.55))
                         .padding(.horizontal, 8)
@@ -213,7 +216,7 @@ struct PomodoroCard: View {
                         .contentShape(Circle())
                 }
                 .buttonStyle(PressableButtonStyle())
-                .help("跳过本轮")
+                .help(loc.t("help.skip"))
             }
 
             Spacer(minLength: 4)
@@ -222,6 +225,7 @@ struct PomodoroCard: View {
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(Color.white.opacity(0.36))
                 .lineLimit(1)
+                .minimumScaleFactor(0.75)
         }
         .frame(height: 26)
     }
@@ -248,7 +252,7 @@ struct PomodoroCard: View {
     }
 
     private var completionTitle: String {
-        pomodoro.phase == .focus ? "专注完成" : "休息结束"
+        loc.t(pomodoro.phase == .focus ? "completion.focus" : "completion.break")
     }
 }
 
